@@ -3,6 +3,7 @@ package spring.learn.todo_api;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class Task{
     @GeneratedValue     //Tells spring to autogenerate this value
     
     private Long id;
+    @NotBlank(message="Descriprion can't be blank ya shithead")
     private String description;
     private boolean completed;
 }
