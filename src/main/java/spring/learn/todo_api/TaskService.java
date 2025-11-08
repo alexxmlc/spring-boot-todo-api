@@ -3,14 +3,12 @@ package spring.learn.todo_api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 import java.util.List;
 
 
-@Service    // Tells spring this is a service (it should create a "bean")
+@Service    // Tells spring this holds the business logic
 public class TaskService {
 
     @Autowired
@@ -20,11 +18,11 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
+    public ResponseEntity<Task> updateTask(Long id, Task taskDetails) {
         
         Optional<Task> optionalTask = taskRepository.findById(id);
 
@@ -42,7 +40,7 @@ public class TaskService {
         }
     }
 
-    public ResponseEntity<Task> deleteTask(@PathVariable Long id){
+    public ResponseEntity<Void> deleteTask(Long id){
 
         Optional<Task> optionalTask = taskRepository.findById(id);
 

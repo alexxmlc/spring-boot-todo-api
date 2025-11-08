@@ -1,4 +1,3 @@
-//HANDLES  WEB REQUESTS(HTTP)
 package spring.learn.todo_api;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +14,30 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
-@RestController             //Tells spring this is a controller for REST requests
-@RequestMapping("/tasks")   //Makes all methods in this class start with http://.../tasks
-public class TaskController {
-
+@RestController
+@RequestMapping("/user")
+public class UserController {
+    
     @Autowired
-    private TaskService taskService;
+    private UserService userService;
 
-    //The controler's only job is to call the service
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
     }
 
     @PostMapping
-    public Task createTask(@Valid @RequestBody Task task) {
-        return taskService.createTask(task);
+    public User createUser(@Valid @RequestBody User user){
+        return userService.creatUser(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id,@Valid @RequestBody Task taskDetails) {
-        return taskService.updateTask(id, taskDetails);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails){
+        return userService.updateUser(id, userDetails);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        return userService.deleteUser(id);
     }
 }
