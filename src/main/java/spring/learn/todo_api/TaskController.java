@@ -3,7 +3,6 @@ package spring.learn.todo_api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,31 +14,31 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
-@RestController             //Tells spring this is a controller for REST requests
-@RequestMapping("/tasks")   //Makes all methods in this class start with http://.../tasks
+@RestController // Tells spring this is a controller for REST requests
 public class TaskController {
 
     @Autowired
     private TaskService taskService;
 
-    //The controler's only job is to call the service
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    // The controler's only job is to call the service
+    @GetMapping("/user/{userId}/tasks")
+    public List<Task> getAllTasks(@PathVariable Long userId) {
+        return taskService.getAllTasks(userId);
     }
 
-    @PostMapping
-    public Task createTask(@Valid @RequestBody Task task) {
-        return taskService.createTask(task);
+    @PostMapping("/user/{userId}/tasks")
+    public Task createTask(@Valid @RequestBody Task task, @PathVariable Long userId) {
+        return taskService.createTask(task, userId);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id,@Valid @RequestBody Task taskDetails) {
-        return taskService.updateTask(id, taskDetails);
+    @PutMapping("/user/{userId}/tasks/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long userId, @PathVariable Long id,
+            @Valid @RequestBody Task taskDetails) {
+        return taskService.updateTask(userId, id, taskDetails);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id);
+    @DeleteMapping("/user/{userId}/tasks/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long userId, @PathVariable Long id) {
+        return taskService.deleteTask(userId, id);
     }
 }
