@@ -7,17 +7,28 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public User creatUser(User user) {
+
+        String plainPassword = user.getPassword();
+        String hashedPassword = passwordEncoder.encode(plainPassword);
+
+        user.setPassword(hashedPassword);
+        
         return userRepository.save(user);
     }
 
