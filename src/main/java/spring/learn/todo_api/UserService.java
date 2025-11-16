@@ -3,6 +3,7 @@ package spring.learn.todo_api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 import java.util.List;
@@ -22,13 +23,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User creatUser(User user) {
+    public User createUser(User user) {
 
         String plainPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(plainPassword);
 
         user.setPassword(hashedPassword);
-        
+        user.setRoles("ROLE_USER");
+
         return userRepository.save(user);
     }
 
@@ -61,4 +63,30 @@ public class UserService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    public User promoteUser(String username) {
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (!user.getRoles().contains("ROLE_ADMIN")) {
+                String existingRoles = user.getRoles();
+                existingRoles += ", ROLE_ADMIN";
+                user.setRoles(existingRoles);
+                userRepository.save(user);
+            }
+            return user;
+        }else{
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+
+    }
+
 }

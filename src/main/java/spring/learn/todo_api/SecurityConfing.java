@@ -20,8 +20,20 @@ public class SecurityConfing {
 
         http
                 .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
+                        // PUBLIC endpoint
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
+
+                        // ADMIN endpoint
+                        .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user/promote/{username}").hasRole("ADMIN")
+
+                        // USER endpoint
+                        .requestMatchers("/user/me").authenticated()
+                        .requestMatchers("/user/{userId}/task/**").authenticated()
+
+                        // Fallback rule
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults())
 

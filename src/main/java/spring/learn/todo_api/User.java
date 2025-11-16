@@ -34,8 +34,11 @@ public class User {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
+    private String roles;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @ToString.Exclude 
-    @EqualsAndHashCode.Exclude 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Task> tasks = new ArrayList<>();
+
 }

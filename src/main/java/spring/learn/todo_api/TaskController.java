@@ -21,23 +21,23 @@ public class TaskController {
     private TaskService taskService;
 
     // The controler's only job is to call the service
-    @GetMapping("/user/{userId}/tasks")
+    @GetMapping("/user/{userId}/task")
     public List<Task> getAllTasks(@PathVariable Long userId) {
         return taskService.getAllTasks(userId);
     }
 
-    @PostMapping("/user/{userId}/tasks")
+    @PostMapping("/user/{userId}/task")
     public Task createTask(@Valid @RequestBody Task task, @PathVariable Long userId) {
         return taskService.createTask(task, userId);
     }
 
-    @PutMapping("/user/{userId}/tasks/{id}")
+    @PutMapping("/user/{userId}/task/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long userId, @PathVariable Long id,
             @Valid @RequestBody Task taskDetails) {
         return taskService.updateTask(userId, id, taskDetails);
     }
 
-    @DeleteMapping("/user/{userId}/tasks/{id}")
+    @DeleteMapping("/user/{userId}/task/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long userId, @PathVariable Long id) {
         return taskService.deleteTask(userId, id);
     }
