@@ -3,17 +3,19 @@ package spring.learn.todo_api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfing {
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain mySecurityRules(HttpSecurity http) throws Exception {
@@ -24,6 +26,7 @@ public class SecurityConfing {
                 .authorizeHttpRequests(auth -> auth
                         // PUBLIC endpoint
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 
                         // ADMIN endpoint
                         .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
@@ -35,16 +38,28 @@ public class SecurityConfing {
 
                         // Fallback rule
                         .anyRequest().authenticated())
-                .httpBasic(withDefaults())
-
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
 
+    // This method is automatically called by Spring in Authentication Manager
+    // Then it checks if the password saved in the DB is the same as the one the
+    // user tries to login with
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
 }
